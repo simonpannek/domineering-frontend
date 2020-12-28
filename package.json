@@ -1,0 +1,26 @@
+{
+  "name": "domineering-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the PGdP 20/21 Domineering-Weihnachtswettbewerb",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf build",
+    "start": "npm run clean && npx @11ty/eleventy --serve --config eleventy.config.js",
+    "build": "npm run clean && npx @11ty/eleventy --config eleventy.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimonPannek/domineering-frontend.git"
+  },
+  "author": "Simon Pannek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SimonPannek/domineering-frontend/issues"
+  },
+  "homepage": "https://github.com/SimonPannek/domineering-frontend#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@11ty/eleventy": "^0.11.1",
+    "rimraf": "^3.0.2"
+  }
+}
