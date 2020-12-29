@@ -24,6 +24,7 @@
 
     <meta property="og:title" content="{{ metaTitle | trim }}">
     <meta property="og:description" content="{{ site.description | safe }}">
+    <meta property="og:image" content="{{ process.url }}{{ site.thumb | safe }}">
 
     {% include "partials/head.njk" %}
 
@@ -31,7 +32,49 @@
 </head>
 <body>
 
-{{ content | safe }}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light white">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="/">
+            <img src="{{ site.thumb | safe }}" height="30" alt="PGdP.de">
+            Domineering
+        </a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+                aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links -->
+        <div class="collapse navbar-collapse" id="basicExampleNav">
+
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link waves-effect" href="/leaderboard/">Leaderboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link waves-effect" href="/groups/">Groups</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mr-auto">
+                <li id="account" class="nav-item">ge12abc</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<div class="text-center mt-3 mx-5">
+
+    {{ content | safe }}
+
+</div>
 
 {% include "partials/body.njk" %}
 
