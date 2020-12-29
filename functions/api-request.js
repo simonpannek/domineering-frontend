@@ -14,8 +14,6 @@ exports.handler = async event => {
     return fetch(url + "?" + url_param).then(res => {
         return res.json();
     }).then(json => {
-        console.log(json);
-
         return {
             statusCode: 200,
             body: JSON.stringify(json).replace(/[\u007F-\uFFFF]/g, function(chr) {
@@ -23,12 +21,10 @@ exports.handler = async event => {
             })
         };
     }).catch(err => {
+        console.log(err);
         return {
             statusCode: 200,
-            body: JSON.stringify({
-                title: "Error",
-                message: "Something went wrong."
-            })
+            body: ""
         };
     });
 }

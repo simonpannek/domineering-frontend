@@ -1,21 +1,22 @@
-const authObj = (function () {
+let authObj;
+(async () => {
     function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
+        const d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = "expires=" + d.toUTCString();
+        const expires = "expires=" + d.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
 
     function getCookie(cname) {
-        var name = cname + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
+        const name = cname + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
                 c = c.substring(1);
             }
-            if (c.indexOf(name) == 0) {
+            if (c.indexOf(name) === 0) {
                 return c.substring(name.length, c.length);
             }
         }
@@ -24,37 +25,31 @@ const authObj = (function () {
 
     if (!getCookie("tumKennung") || !getCookie("authenticationToken")) {
         const params = new URLSearchParams(window.location.search);
-        const tumKennung = params.get("tumKennung");
-        const authenticationToken = params.get("authenticationToken");
-
-        if (!tumKennung || !authenticationToken) {
-            return {
-                kennung: "Not logged in",
-                token: undefined
-            }
-        }
-
-        request("authenticateUser", {
-            tumKennung: tumKennung,
-            authenticationToken: authenticationToken
-        });
-
-        setCookie("tumKennung", tumKennung, 30);
-        setCookie("authenticationToken", authenticationToken, 30);
+        setCookie("tumKennung", params.get("tumKennung"), 30);
+        setCookie("authenticationToken", params.get("authenticationToken"), 30);
     }
 
-    return {
-        kennung: getCookie("tumKennung"),
-        token: getCookie("authenticationToken")
-    };
-})();
+    const kennung = getCookie("tumKennung");
+    const token = getCookie("authenticationToken");
 
-function logout() {
-    document.cookie.split(";").forEach(function (c) {
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    return await request("authenticateUser", {
+        tumKennung: kennung,
+        authenticationToken: token
+    }).then(res => {
+        if (!res.hasOwnProperty("error")) {
+            authObj = {
+                kennung: kennung,
+                token: token
+            };
+
+            document.getElementById("account").innerText = kennung;
+            pageActions();
+        } else {
+            document.cookie.split(";").forEach(clearCookie);
+            alert("Please open this site using your custom link to login!");
+        }
     });
-    location.href = "/";
-}
+})();
 
 async function request(method = "", parameters = {}) {
     const url = "/.netlify/functions/api-request/" + method;
@@ -63,7 +58,7 @@ async function request(method = "", parameters = {}) {
         return encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
     }).join('&');
 
-    const response = await fetch(url + "?" + url_param, {
+    return await fetch(url + "?" + url_param, {
         method: "GET",
         mode: "no-cors",
         cache: "no-cache",
@@ -74,14 +69,17 @@ async function request(method = "", parameters = {}) {
         redirect: "follow",
         referrerPolicy: "no-referrer"
     }).then(res => {
-        return response.json();
-    }).catch(err => {
+        return res.json();
+    }).catch(ignored => {
         return {};
     });
-
-    return response;
 }
 
-(function () {
-    document.getElementById("account").innerText = authObj.kennung;
-})();
+function clearCookie(c) {
+    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+}
+
+function logout() {
+    document.cookie.split(";").forEach(clearCookie);
+    location.href = "/";
+}
