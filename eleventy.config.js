@@ -1,3 +1,6 @@
+// Imports
+const transforms = require("./transforms");
+
 module.exports = config => {
 
     // Data merge
@@ -8,6 +11,10 @@ module.exports = config => {
 
     // Layouts
     config.addLayoutAlias("default", "layouts/default.njk");
+
+    // Transforms
+    config.addTransform('purge-styles', transforms.purgeStyles);
+    config.addTransform("minify", transforms.minify);
 
     return {
         dir: {
