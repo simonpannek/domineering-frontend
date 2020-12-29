@@ -1,6 +1,7 @@
 async function pageActions() {
     groupInfo().then(res => {
-        let result = "";
+        const leaderboard = document.getElementById("leaderboard");
+        leaderboard.innerHTML = "";
 
         if (res.hasOwnProperty("competitorInfos")) {
             res.competitorInfos.sort((o1, o2) => {
@@ -15,22 +16,18 @@ async function pageActions() {
             let lastScore = -1;
 
             for (const competitor of res.competitorInfos) {
-                if (competitor.hasOwnProperty("tumKennung")
-                    && competitor.hasOwnProperty("name")
-                    && competitor.hasOwnProperty("score")) {
-                    result += "<tr>";
+                if (checkMultipleProperties(competitor, ["tumKennung", "name", "score"])) {
+                    let result = "<tr>";
                     result += `<th scope="row">${lastScore === competitor.score ? "" : ++rank}</th>`;
-                    result += `<td><a href="/user/${competitor.tumKennung}">${competitor.tumKennung}</a></td>`;
-                    result += `<td><a href="/user/${competitor.tumKennung}">${competitor.name}</a></td>`;
+                    result += `<td><a${competitor.tumKennung === authObj.kennung ? "" : " href=\"/user/?enemy=" + competitor.tumKennung + "\""} title="${competitor.tumKennung}">${competitor.name}</a></td>`;
                     result += `<td>${competitor.score}</td>`;
-                    result += "</a>";
                     result += "</tr>";
+
+                    leaderboard.innerHTML += result;
 
                     lastScore = competitor.score;
                 }
             }
         }
-
-        document.getElementById("leaderboard").innerHTML = result;
     });
 }
