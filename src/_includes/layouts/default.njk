@@ -53,15 +53,16 @@
 
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link waves-effect" href="/leaderboard/">Leaderboard</a>
+                    <a class="nav-link waves-effect" href="/">Leaderboard</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link waves-effect" href="/groups/">Groups</a>
+                    <a class="nav-link waves-effect" href="/games/">Eigene Spiele</a>
                 </li>
             </ul>
 
-            <ul class="navbar-nav mr-auto">
-                <li id="account" class="nav-item"></li>
+            <ul class="navbar-nav">
+                <li id="account" class="nav-item">Not logged in</li>
             </ul>
 
         </div>
@@ -70,7 +71,7 @@
 
 </nav>
 
-<div class="text-center mt-3 mx-5">
+<div class="text-center mt-5 mx-5">
 
     {{ content | safe }}
 
