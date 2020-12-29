@@ -9,8 +9,6 @@ exports.handler = async event => {
         return encodeURIComponent(k) + '=' + encodeURIComponent(event.queryStringParameters[k])
     }).join('&');
 
-    console.log(url + "?" + url_param);
-
     return fetch(url + "?" + url_param).then(res => {
         return res.json();
     }).then(json => {
@@ -20,8 +18,7 @@ exports.handler = async event => {
                 return "\\u" + ("0000" + chr.charCodeAt(0).toString(16)).substr(-4)
             })
         };
-    }).catch(err => {
-        console.log(err);
+    }).catch(ignored => {
         return {
             statusCode: 200,
             body: ""
