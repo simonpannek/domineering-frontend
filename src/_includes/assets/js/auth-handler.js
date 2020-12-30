@@ -56,7 +56,7 @@ let authObj;
 })();
 
 async function request(method = "", parameters = {}) {
-    const url = "http://dom.simon.rest/" + method;
+    const url = "https://dom.simon.rest/" + method;
 
     const url_param = Object.keys(parameters).map(function (k) {
         return encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
