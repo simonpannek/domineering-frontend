@@ -46,31 +46,33 @@ let authObj;
             pageActions();
         } else {
             document.cookie.split(";").forEach(clearCookie);
-            alert("Please open this site using your custom link to login!");
+            if (res.error === "auth failed") {
+                alert("Please open this site using your custom link to login!");
+            } else {
+                alert("An unknown error occured, if you do not know what's wrong contact someone on Zulip.")
+            }
         }
     });
 })();
 
 async function request(method = "", parameters = {}) {
-    const url = "/.netlify/functions/api-request/" + method;
+    const url = "http://dom.simon.rest/" + method;
 
     const url_param = Object.keys(parameters).map(function (k) {
         return encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
     }).join('&');
 
-    return await fetch(url + "?" + url_param, {
-        method: "GET",
-        mode: "no-cors",
-        cache: "no-cache",
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer"
-    }).then(res => {
-        return res.json();
-    }).catch(ignored => {
+    return $.ajax({
+        url: url + "?" + url_param,
+        success: res => {
+            return res;
+        }
+    }).catch(err => {
+        if (err.status === 400) {
+            return {
+                error: "auth failed"
+            }
+        }
         return {};
     });
 }
