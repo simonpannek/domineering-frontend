@@ -1,5 +1,30 @@
+let running = 0;
+
+const group = async num => {
+    const value = parseInt(num);
+    if (!isNaN(value) && value >= 1 && value <= (await max())) {
+        sessionStorage.setItem("group", num);
+    } else if (!sessionStorage.getItem("group")) {
+        const info = await competitorInfo();
+        sessionStorage.setItem("group", info.groupId);
+    }
+
+    const current = sessionStorage.getItem("group");
+    document.getElementById("group").value = current;
+    return current;
+};
+
+const max = async () => {
+    if (!sessionStorage.getItem("max")) sessionStorage.setItem("max", await maxGroup());
+
+    const current = sessionStorage.getItem("max");
+    document.getElementById("group").max = current;
+    document.getElementById("max").innerText = current;
+    return current;
+}
+
 async function pageActions() {
-    groupInfo().then(res => {
+    groupInfo((await group())).then(res => {
         const leaderboard = document.getElementById("leaderboard");
         leaderboard.innerHTML = "";
 
@@ -31,3 +56,18 @@ async function pageActions() {
         }
     });
 }
+
+document.getElementById("group").addEventListener("change", async event => {
+    running++;
+    setTimeout(async () => {
+        running--;
+
+        const value = event.target.value;
+
+        // noinspection EqualityComparisonWithCoercionJS
+        if (running === 0 && (await group()) != value) {
+            await group(value);
+            await pageActions();
+        }
+    }, 500);
+});

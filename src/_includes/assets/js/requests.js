@@ -29,3 +29,10 @@ async function boardInfoTwoPlayer(numPlaygrounds = 20, againstKennung = "") {
         againstCompetitor: againstKennung
     });
 }
+
+async function maxGroup() {
+    return await request("getMaxGroup", {
+        tumKennung: authObj().kennung,
+        authenticationToken: authObj().token
+    });
+}
