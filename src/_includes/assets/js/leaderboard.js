@@ -2,12 +2,10 @@ let running = 0;
 
 const group = async num => {
     const value = parseInt(num);
-    if (!isNaN(value) && value >= 1 && value <= (await max())) {
+    if (!isNaN(value) && value >= 1 && value <= (await max()))
         sessionStorage.setItem("group", num);
-    } else if (!sessionStorage.getItem("group")) {
-        const info = await competitorInfo();
-        sessionStorage.setItem("group", info.groupId);
-    }
+    else if (!sessionStorage.getItem("group"))
+        sessionStorage.setItem("group", (await competitorInfo()).groupId);
 
     const current = sessionStorage.getItem("group");
     document.getElementById("group").value = current;
@@ -15,7 +13,8 @@ const group = async num => {
 };
 
 const max = async () => {
-    if (!sessionStorage.getItem("max")) sessionStorage.setItem("max", await maxGroup());
+    if (!sessionStorage.getItem("max"))
+        sessionStorage.setItem("max", await maxGroup());
 
     const current = sessionStorage.getItem("max");
     document.getElementById("group").max = current;
@@ -55,6 +54,8 @@ async function pageActions() {
             }
         }
     });
+
+    await max();
 }
 
 document.getElementById("group").addEventListener("change", async event => {
@@ -65,7 +66,7 @@ document.getElementById("group").addEventListener("change", async event => {
         const value = event.target.value;
 
         // noinspection EqualityComparisonWithCoercionJS
-        if (running === 0 && (await group()) != value) {
+        if (running === 0 && (await group().catch(ignored => 0)) != value) {
             await group(value);
             await pageActions();
         }
