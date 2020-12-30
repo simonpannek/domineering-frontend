@@ -19,7 +19,7 @@ async function pageActions() {
                 if (checkMultipleProperties(competitor, ["tumKennung", "name", "score"])) {
                     let result = "<tr>";
                     result += `<th scope="row">${lastScore === competitor.score ? "" : ++rank}</th>`;
-                    result += `<td><a${competitor.tumKennung === authObj.kennung ? "" : " href=\"/user/?enemy=" + competitor.tumKennung + "\""} title="${competitor.tumKennung}">${competitor.name}</a></td>`;
+                    result += `<td><a${competitor.tumKennung === authObj().kennung ? "" : " href=\"/user/?enemy=" + competitor.tumKennung + "\""} title="${competitor.tumKennung}">${competitor.name}</a></td>`;
                     result += `<td>${competitor.score}</td>`;
                     result += "</tr>";
 

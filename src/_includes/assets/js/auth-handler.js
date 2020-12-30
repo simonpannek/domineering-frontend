@@ -1,58 +1,57 @@
-let authObj;
+const authObj = obj => {
+    if (typeof obj === "object") sessionStorage.setItem("authObj", JSON.stringify(obj));
+    return JSON.parse(sessionStorage.getItem("authObj"));
+};
+
 (async () => {
-    function setCookie(cname, cvalue, exdays) {
-        const d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        const expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
-    function getCookie(cname) {
-        const name = cname + "=";
-        const decodedCookie = decodeURIComponent(document.cookie);
-        const ca = decodedCookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
-            }
+    if (authObj() === null) {
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
         }
-        return "";
-    }
 
-    if (!getCookie("tumKennung") || !getCookie("authenticationToken")) {
-        const params = new URLSearchParams(window.location.search);
-        setCookie("tumKennung", params.get("tumKennung"), 30);
-        setCookie("authenticationToken", params.get("authenticationToken"), 30);
-    }
+        function getCookie(cname) {
+            const name = cname + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) === 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
 
-    const kennung = getCookie("tumKennung");
-    const token = getCookie("authenticationToken");
+        if (!getCookie("tumKennung") || !getCookie("authenticationToken")) {
+            const params = new URLSearchParams(window.location.search);
+            setCookie("tumKennung", params.get("tumKennung"), 30);
+            setCookie("authenticationToken", params.get("authenticationToken"), 30);
+        }
 
-    return await request("authenticateUser", {
-        tumKennung: kennung,
-        authenticationToken: token
-    }).then(res => {
-        if (!res.hasOwnProperty("error")) {
-            authObj = {
+        const kennung = getCookie("tumKennung");
+        const token = getCookie("authenticationToken");
+
+        await request("authenticateUser", {
+            tumKennung: kennung,
+            authenticationToken: token
+        }).then(ignored => {
+            authObj({
                 kennung: kennung,
                 token: token
-            };
+            });
+        }).catch(ignored => undefined);
+    }
 
-            document.getElementById("account").innerText = kennung;
-            pageActions();
-        } else {
-            document.cookie.split(";").forEach(clearCookie);
-            if (res.error === "auth failed") {
-                alert("Please open this site using your custom link to login!");
-            } else {
-                alert("An unknown error occured, if you do not know what's wrong contact someone on Zulip.")
-            }
-        }
-    });
+    if (authObj() !== null) {
+        document.getElementById("account").innerText = authObj().kennung;
+        await pageActions();
+    }
 })();
 
 async function request(method = "", parameters = {}) {
@@ -62,18 +61,13 @@ async function request(method = "", parameters = {}) {
         return encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
     }).join('&');
 
-    return $.ajax({
-        url: url + "?" + url_param,
-        success: res => {
-            return res;
-        }
-    }).catch(err => {
+    return $.ajax(url + "?" + url_param).catch(err => {
         if (err.status === 400) {
-            return {
-                error: "auth failed"
-            }
+            sessionStorage.clear();
+            document.cookie.split(";").forEach(clearCookie);
+            alert("Authentication failed. Please open this site using your custom link to login!")
         }
-        return {};
+        return err;
     });
 }
 
@@ -82,6 +76,7 @@ function clearCookie(c) {
 }
 
 function logout() {
+    sessionStorage.clear();
     document.cookie.split(";").forEach(clearCookie);
     location.href = "/";
 }
