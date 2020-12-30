@@ -6,7 +6,7 @@ async function pageActions() {
     if (against) {
         document.getElementById("enemy").innerText = against;
 
-        count += 10;
+        count += 5;
 
         boardInfoTwoPlayer(count, against).then(printGamelist);
     }

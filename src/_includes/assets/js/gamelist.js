@@ -13,9 +13,14 @@ async function printGamelist(res) {
         for (let x = 0; x < board.length; x++) {
             result += "<tr>";
             for (let y = 0; y < board[0].length; y++) {
-                result += `<td class="${board[x][y]}">${board[x][y]}</td>`;
+                const current = board[x][y];
+
+                if (!current) {
+                    result += "<td></td>"
+                } else {
+                    result += `<td class=${current}>${current.length === 1 ? current[0] : ""}</td>`;
+                }
             }
-            result += "</tr>";
         }
 
         return result;
@@ -27,18 +32,19 @@ async function printGamelist(res) {
     let i = 0;
 
     if (res.hasOwnProperty("games")) {
-        for (const game of res.games) {
+        const games = res.games.slice(0, count - 1);
+
+        for (const game of games) {
             if (checkMultipleProperties(game,
-                ["winner", "moves", "player_V", "player_V_name", "player_H", "player_H_name"]) && i < count) {
+                ["winner", "moves", "player_V", "player_V_name", "player_H", "player_H_name"])) {
 
                 const board = createBoard();
 
                 for (const move of game.moves) {
-                    if (i < Math.pow(board.length, 2) / 2
-                        && checkMultipleProperties(move, ["pos_x", "pos_y", "horizontal"])) {
+                    if (checkMultipleProperties(move, ["pos_x", "pos_y", "horizontal"])) {
                         const char = move.horizontal ? "H" : "V";
-                        board[move.pos_x][move.pos_y] = char;
-                        board[move.pos_x + (move.horizontal ? 1 : 0)][move.pos_y + (move.horizontal ? 0 : 1)] = char;
+                        board[move.pos_y][move.pos_x] = char;
+                        board[move.pos_y + (move.horizontal ? 0 : 1)][move.pos_x + (move.horizontal ? 1 : 0)] = char + "_2";
                     }
                 }
 
@@ -55,8 +61,8 @@ async function printGamelist(res) {
             }
         }
 
-        if (i === count) {
-            list.innerHTML += `<button type="button" class="btn btn-outline-danger" onclick="pageActions()">Mehr Spiele laden</button>`;
+        if (games.length !== res.games.length) {
+            list.innerHTML += `<br/><button type="button" class="btn btn-outline-danger" onclick="pageActions()">Mehr Spiele laden</button>`;
         }
     }
 }
