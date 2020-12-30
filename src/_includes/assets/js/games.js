@@ -1,7 +1,7 @@
 let count = 1;
 
 async function pageActions() {
-    // nextCompetitor().then(res => document.getElementById("next").innerText = res);
+    count += 5;
 
     count += 10;
 

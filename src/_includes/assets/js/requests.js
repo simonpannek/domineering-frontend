@@ -6,11 +6,10 @@ async function groupInfo(groupId = 1) {
     });
 }
 
-async function competitorInfo(groupId = 1) {
+async function competitorInfo() {
     return await request("getCompetitorInfo", {
         tumKennung: authObj.kennung,
-        authenticationToken: authObj.token,
-        groupId: groupId
+        authenticationToken: authObj.token
     });
 }
 
@@ -28,20 +27,5 @@ async function boardInfoTwoPlayer(numPlaygrounds = 20, againstKennung = "") {
         authenticationToken: authObj.token,
         numPlaygrounds: numPlaygrounds,
         againstCompetitor: againstKennung
-    });
-}
-
-async function maxGroup() {
-    return await request("getMaxGroup", {
-        tumKennung: authObj.kennung,
-        authenticationToken: authObj.token
-    });
-}
-
-async function nextCompetitor(groupId = 1) {
-    return await request("getNextCompetitor", {
-        tumKennung: authObj.kennung,
-        authenticationToken: authObj.token,
-        groupId: groupId
     });
 }
