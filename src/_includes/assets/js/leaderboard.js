@@ -60,15 +60,23 @@ async function pageActions() {
 
 document.getElementById("group").addEventListener("change", async event => {
     running++;
+
+    const spinner = document.getElementById("spinner");
+    spinner.style.visibility = "visible";
+
     setTimeout(async () => {
         running--;
 
         const value = event.target.value;
 
-        // noinspection EqualityComparisonWithCoercionJS
-        if (running === 0 && (await group().catch(ignored => 0)) != value) {
-            await group(value);
-            await pageActions();
+        if (running === 0) {
+            // noinspection EqualityComparisonWithCoercionJS
+            if ((await group().catch(ignored => 0)) != value && authObj() !== null) {
+                await group(value);
+                await pageActions();
+            }
+
+            spinner.style.visibility = "hidden";
         }
     }, 500);
 });

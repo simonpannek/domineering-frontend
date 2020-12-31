@@ -7,6 +7,10 @@
     float: right;
 }
 
+.spinner-border {
+    visibility: hidden;
+}
+
 .board {
     border: 2px solid black;
     margin: auto;

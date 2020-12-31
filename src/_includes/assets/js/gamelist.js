@@ -65,7 +65,7 @@ async function printGamelist(res) {
             list.innerHTML += `<br/><button type="button" class="btn btn-outline-danger" onclick="pageActions()">Mehr Spiele laden</button>`;
         } else if (!games.length) {
             document.getElementById("userTable").innerHTML =
-                "<br/><h3>You have never played against this user :(</h3>"
+                "<br/><h3>Es konnten keine Spiele gefunden werden :(</h3>"
         }
     }
 }
