@@ -1,10 +1,19 @@
-const authObj = obj => {
-    if (typeof obj === "object") sessionStorage.setItem("authObj", JSON.stringify(obj));
-    return JSON.parse(sessionStorage.getItem("authObj"));
-};
+async function request(method = "", parameters = {}) {
+    const url = "https://dom.simon.rest/" + method;
 
-(async () => {
-    if (authObj() === null) {
+    const url_param = Object.keys(parameters).map(function (k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
+    }).join('&');
+
+    return $.ajax(url + "?" + url_param).catch(err => {
+        if (err.status === 400)
+            logout();
+        return err;
+    });
+}
+
+const authObj = async () => {
+    if (!sessionStorage.getItem("authObj")) {
         function setCookie(cname, cvalue, exdays) {
             const d = new Date();
             d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -40,43 +49,46 @@ const authObj = obj => {
         await request("authenticateUser", {
             tumKennung: kennung,
             authenticationToken: token
-        }).then(ignored => {
-            authObj({
+        }).then(async () => {
+            sessionStorage.setItem("authObj", JSON.stringify({
                 kennung: kennung,
                 token: token
-            });
-        }).catch(ignored => undefined);
+            }));
+        }).catch(logout);
     }
 
-    if (authObj() !== null) {
-        document.getElementById("account").innerText = authObj().kennung;
-        await pageActions();
+    return JSON.parse(sessionStorage.getItem("authObj"));
+};
+
+let infoObj;
+
+function updateFields() {
+    if (infoObj !== null) {
+        document.getElementById("accountName").innerText = infoObj.name;
+        document.getElementById("accountGroup").innerText = "Group: " + infoObj.groupId;
+        document.getElementById("accountScore").innerText = "Score: " + infoObj.score;
+
+        document.getElementById("accountLogout").addEventListener("click", logout);
     }
-})();
-
-async function request(method = "", parameters = {}) {
-    const url = "https://dom.simon.rest/" + method;
-
-    const url_param = Object.keys(parameters).map(function (k) {
-        return encodeURIComponent(k) + '=' + encodeURIComponent(parameters[k])
-    }).join('&');
-
-    return $.ajax(url + "?" + url_param).catch(err => {
-        if (err.status === 400) {
-            sessionStorage.clear();
-            document.cookie.split(";").forEach(clearCookie);
-            alert("Authentication failed. Please open this site using your custom link to login!")
-        }
-        return err;
-    });
-}
-
-function clearCookie(c) {
-    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
 }
 
 function logout() {
+    function clearCookie(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    }
+
     sessionStorage.clear();
     document.cookie.split(";").forEach(clearCookie);
-    location.href = "/";
+
+    location.href = "/login/";
 }
+
+(async () => {
+    if ((await authObj()) !== null) {
+        document.getElementById("accountDropdown").innerText = (await authObj()).kennung;
+        infoObj = await competitorInfo();
+
+        await pageActions();
+        updateFields();
+    }
+})();

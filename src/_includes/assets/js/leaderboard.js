@@ -5,7 +5,7 @@ const group = async num => {
     if (!isNaN(value) && value >= 1 && value <= (await max()))
         sessionStorage.setItem("group", num);
     else if (!sessionStorage.getItem("group"))
-        sessionStorage.setItem("group", (await competitorInfo()).groupId);
+        sessionStorage.setItem("group", infoObj.groupId);
 
     const current = sessionStorage.getItem("group");
     document.getElementById("group").value = current;
@@ -23,7 +23,7 @@ const max = async () => {
 }
 
 async function pageActions() {
-    groupInfo((await group())).then(res => {
+    groupInfo((await group())).then(async res => {
         const leaderboard = document.getElementById("leaderboard");
         leaderboard.innerHTML = "";
 
@@ -43,7 +43,7 @@ async function pageActions() {
                 if (checkMultipleProperties(competitor, ["tumKennung", "name", "score"])) {
                     let result = "<tr>";
                     result += `<th scope="row">${lastScore === competitor.score ? "" : ++rank}</th>`;
-                    result += `<td><a${competitor.tumKennung === authObj().kennung ? "" : " href=\"/user/?enemy=" + competitor.tumKennung + "\""} title="${competitor.tumKennung}">${competitor.name}</a></td>`;
+                    result += `<td><a${competitor.tumKennung === (await authObj()).kennung ? "" : " href=\"/user/?enemy=" + competitor.tumKennung + "\""} title="${competitor.tumKennung}">${competitor.name}</a></td>`;
                     result += `<td>${competitor.score}</td>`;
                     result += "</tr>";
 
@@ -71,7 +71,7 @@ document.getElementById("group").addEventListener("change", async event => {
 
         if (running === 0) {
             // noinspection EqualityComparisonWithCoercionJS
-            if ((await group().catch(ignored => 0)) != value && authObj() !== null) {
+            if ((await group().catch(ignored => 0)) != value && (await authObj()) !== null) {
                 await group(value);
                 await pageActions();
             }

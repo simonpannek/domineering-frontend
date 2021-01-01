@@ -50,10 +50,10 @@ async function printGamelist(res) {
 
                 let result = "<tr>";
                 result += `<th scope="row">${++i}</th>`;
-                result += `<td><a${game.winner === authObj().kennung ? "" : " href=\"/user/?enemy=" + game.winner + "\""} title="${game.winner}">`;
+                result += `<td><a${game.winner === (await authObj()).kennung ? "" : " href=\"/user/?enemy=" + game.winner + "\""} title="${game.winner}">`;
                 result += `${game.winner === game.player_H ? game.player_H_name : game.player_V_name}</a></td>`;
-                result += `<td><a${game.player_H === authObj().kennung ? "" : " href=\"/user/?enemy=" + game.player_H + "\""} title${game.player_H}>${game.player_H_name}</a></td>`;
-                result += `<td><a${game.player_V === authObj().kennung ? "" : " href=\"/user/?enemy=" + game.player_V + "\""} title="${game.player_V}">${game.player_V_name}</a></td>`;
+                result += `<td><a${game.player_H === (await authObj()).kennung ? "" : " href=\"/user/?enemy=" + game.player_H + "\""} title${game.player_H}>${game.player_H_name}</a></td>`;
+                result += `<td><a${game.player_V === (await authObj()).kennung ? "" : " href=\"/user/?enemy=" + game.player_V + "\""} title="${game.player_V}">${game.player_V_name}</a></td>`;
                 result += `<td><table class="board"><tbody>${printBoard(board)}</tbody></table></div></td>`;
                 result += "</tr>";
 
