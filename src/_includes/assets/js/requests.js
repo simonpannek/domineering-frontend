@@ -6,10 +6,11 @@ async function groupInfo(groupId = 1) {
     });
 }
 
-async function competitorInfo() {
+async function competitorInfo(competitor = authObj().kennung) {
     return await request("getCompetitorInfo", {
         tumKennung: authObj().kennung,
-        authenticationToken: authObj().token
+        authenticationToken: authObj().token,
+        competitor: competitor
     });
 }
 
