@@ -1,0 +1,31 @@
+---
+layout: frame
+title: Login
+---
+<div class="text-center mt-5 mx-5">
+
+    <h1>Willkommen!</h1>
+    <p>Es sieht so aus, als wärst du nicht eingeloggt :/</p>
+    <p>Um die Seite aufrufen zu können, nutze bitte den Link, den du in den Artemis Tests finden kannst.</p>
+    <p>Alternativ kannst du dich natürlich auch hier direkt anmelden
+        (nutze dafür dein TUM Kürzel und den Authentication Token):</p>
+
+    <div class="login-form mt-5">
+        <form id="loginForm">
+            <div class="mb-4">
+                <label class="form-label float-left" for="kuerzel">TUM Kürzel</label>
+                <input type="text" id="kuerzel" class="form-control" autocomplete="kuerzel" required/>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label float-left" for="token">Authentication Token</label>
+                <input type="password" id="token" class="form-control" autocomplete="token" required/>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Einloggen</button>
+        </form>
+    </div>
+
+    <script src="/assets/js/login.min.js"></script>
+
+</div>

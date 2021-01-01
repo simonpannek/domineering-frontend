@@ -4,7 +4,17 @@
 }
 
 .form-outline {
-    float: right;
+
+}
+
+.login-form {
+    width: 600px;
+    max-width: 80vw;
+    margin: auto;
+}
+
+.dropdown-menu.show {
+    display: block;
 }
 
 .spinner-border {

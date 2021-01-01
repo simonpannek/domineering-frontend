@@ -1,36 +1,11 @@
+---
+layout: frame
+---
 {% set metaTitle %}
     {% if not title %}{{ site.title | safe }}
     {% else %}{{ title | capitalize | safe }} - {{ site.title | safe }}
     {% endif %}
 {% endset %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/assets/favicon/site.webmanifest">
-    <link rel="mask-icon" href="/assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="msapplication-config" content="/assets/favicon/browserconfig.xml">
-    <meta name="theme-color" content="#ffffff">
-
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="{{ site.description | safe }}" name="description">
-    <meta content="{{ site.author | safe }}" name="author">
-    <meta content="index, follow" name="robots">
-
-    <meta property="og:title" content="{{ metaTitle | trim }}">
-    <meta property="og:description" content="{{ site.description | safe }}">
-    <meta property="og:image" content="{{ process.url }}{{ site.thumb | safe }}">
-
-    {% include "partials/head.njk" %}
-
-    <title>{{ metaTitle | trim }}</title>
-</head>
-<body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light white">
@@ -62,7 +37,33 @@
             </ul>
 
             <ul class="navbar-nav">
-                <li id="account" class="nav-item">Not logged in</li>
+                <li class="nav-item dropdown">
+                    <a id="accountDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+                        Not logged in
+                    </a>
+                    <!-- Dropdown menu -->
+                    <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                        <li>
+                            <a id="accountName" class="dropdown-item"></a>
+                        </li>
+
+                        <li>
+                            <a id="accountGroup" class="dropdown-item"></a>
+                        </li>
+
+                        <li>
+                            <a id="accountScore" class="dropdown-item"></a>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+
+                        <li>
+                            <a id="accountLogout" class="dropdown-item" href="/login/">Logout</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
 
         </div>
@@ -78,6 +79,3 @@
 </div>
 
 {% include "partials/body.njk" %}
-
-</body>
-</html>

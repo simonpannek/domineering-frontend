@@ -11,6 +11,7 @@ module.exports = config => {
     config.addPassthroughCopy("src/assets/img/*");
 
     // Layouts
+    config.addLayoutAlias("frame", "layouts/frame.njk");
     config.addLayoutAlias("default", "layouts/default.njk");
 
     // Transforms
