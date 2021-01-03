@@ -36,13 +36,13 @@ async function pageActions() {
                 return o2.score - o1.score;
             });
 
-            let rank = 0;
+            let rank = 1;
             let lastScore = -1;
 
             for (const competitor of res.competitorInfos) {
                 if (checkMultipleProperties(competitor, ["tumKennung", "name", "score"])) {
                     let result = "<tr>";
-                    result += `<th scope="row">${lastScore === competitor.score ? "" : ++rank}</th>`;
+                    result += `<th scope="row">${lastScore === competitor.score ? "" : rank}</th>`;
                     result += `<td><a${competitor.tumKennung === (await authObj()).kennung ? "" : " href=\"/user/?enemy=" + competitor.tumKennung + "\""} title="${competitor.tumKennung}">${competitor.name}</a></td>`;
                     result += `<td>${competitor.score}</td>`;
                     result += "</tr>";
@@ -51,6 +51,8 @@ async function pageActions() {
 
                     lastScore = competitor.score;
                 }
+
+                rank++;
             }
         }
     });
