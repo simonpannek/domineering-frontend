@@ -18,7 +18,8 @@ async function printGamelist(res) {
                 if (!current) {
                     result += "<td></td>"
                 } else {
-                    result += `<td class=${current}>${current.length === 1 ? current[0] : ""}</td>`;
+                    const split = board[x][y].split(":");
+                    result += `<td class=${split[1]} title="Move ${split[0]}">${split[1].length === 1 ? split[1][0] : split[0]}</td>`;
                 }
             }
         }
@@ -40,12 +41,16 @@ async function printGamelist(res) {
 
                 const board = createBoard();
 
+                let index = 1;
+
                 for (const move of game.moves) {
                     if (checkMultipleProperties(move, ["pos_x", "pos_y", "horizontal"])) {
-                        const char = move.horizontal ? "H" : "V";
+                        const char = index + ":" + (move.horizontal ? "H" : "V");
                         board[move.pos_y][move.pos_x] = char;
                         board[move.pos_y + (move.horizontal ? 0 : 1)][move.pos_x + (move.horizontal ? 1 : 0)] = char + "_2";
                     }
+
+                    index++;
                 }
 
                 let result = "<tr>";
